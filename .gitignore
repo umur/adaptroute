@@ -1,0 +1,17 @@
+# Build output
+target/
+*.jar
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# OMC state
+.omc/
