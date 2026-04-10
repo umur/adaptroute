@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd \\\"/Users/umurinan/Documents/papers/q3-Adaptive Message Routing in Spring Boot Microservices/code/plots\\\" && python analyze_results.py 2>&1\",\"timeout\":60000}",
-  "error": "Exit code 127\n(eval):1: command not found: python\n[rerun: b447]",
-  "timestamp": "2026-04-08T16:27:58.739Z",
-  "retry_count": 1
-}

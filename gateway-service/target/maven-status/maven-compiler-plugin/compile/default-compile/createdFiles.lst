@@ -1,8 +1,0 @@
-com/research/adaptive/gateway/metrics/GatewayRabbitMqConfig.class
-com/research/adaptive/gateway/consumer/RabbitMqMessageConsumer.class
-com/research/adaptive/gateway/health/BrokerHealthIndicator.class
-com/research/adaptive/gateway/router/RoutingController.class
-com/research/adaptive/gateway/GatewayServiceApplication.class
-com/research/adaptive/gateway/metrics/GatewayKafkaConfig.class
-com/research/adaptive/gateway/router/AdaptiveMessageDispatcher.class
-com/research/adaptive/gateway/consumer/KafkaMessageConsumer.class

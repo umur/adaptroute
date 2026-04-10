@@ -1,5 +1,0 @@
-/Users/umurinan/Documents/papers/q3-Adaptive Message Routing in Spring Boot Microservices/code/analytics-service/src/main/java/com/research/adaptive/analytics/AnalyticsServiceApplication.java
-/Users/umurinan/Documents/papers/q3-Adaptive Message Routing in Spring Boot Microservices/code/analytics-service/src/main/java/com/research/adaptive/analytics/model/AnalyticsEvent.java
-/Users/umurinan/Documents/papers/q3-Adaptive Message Routing in Spring Boot Microservices/code/analytics-service/src/main/java/com/research/adaptive/analytics/producer/AnalyticsEventProducer.java
-/Users/umurinan/Documents/papers/q3-Adaptive Message Routing in Spring Boot Microservices/code/analytics-service/src/main/java/com/research/adaptive/analytics/service/AnalyticsEmitterService.java
-/Users/umurinan/Documents/papers/q3-Adaptive Message Routing in Spring Boot Microservices/code/analytics-service/src/main/java/com/research/adaptive/analytics/service/AnalyticsServiceConfig.java
