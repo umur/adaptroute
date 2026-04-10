@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: experiment-runner
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASS:guest}
+
+server:
+  port: ${SERVER_PORT:8090}
+
+gateway:
+  url: ${GATEWAY_URL:http://gateway-service:8080}
+
+results:
+  dir: ${RESULTS_DIR:results}
+
+experiment:
+  cooldown-ms: ${EXPERIMENT_COOLDOWN_MS:10000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  metrics:
+    export:
+      prometheus:
+        enabled: false
+
+logging:
+  level:
+    com.umurinan.adaptroute: INFO
+    org.springframework.kafka: WARN
+    org.springframework.amqp: WARN

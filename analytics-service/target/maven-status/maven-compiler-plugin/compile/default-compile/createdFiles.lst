@@ -1,0 +1,8 @@
+com/research/adaptive/analytics/model/AnalyticsEvent.class
+com/research/adaptive/analytics/model/AnalyticsEvent$EventType.class
+com/research/adaptive/analytics/service/AnalyticsServiceConfig.class
+com/research/adaptive/analytics/producer/AnalyticsEventProducer.class
+com/research/adaptive/analytics/AnalyticsServiceApplication.class
+com/research/adaptive/analytics/service/AnalyticsEmitterService.class
+com/research/adaptive/analytics/producer/AnalyticsEventProducer$1.class
+com/research/adaptive/analytics/model/AnalyticsEvent$AnalyticsEventBuilder.class

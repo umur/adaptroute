@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: order-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASS:guest}
+
+server:
+  port: ${SERVER_PORT:8081}
+
+gateway:
+  url: ${GATEWAY_URL:http://gateway-service:8080}
+
+order:
+  emit:
+    interval-ms: ${ORDER_EMIT_INTERVAL_MS:100}
+  routing:
+    hint: ${ORDER_ROUTING_HINT:ADAPTIVE}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,info
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      service: order-service
+
+logging:
+  level:
+    com.umurinan.adaptroute: INFO

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Annotation profile for Adaptive Message Routing - Parent" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="analytics-service" />
+        <module name="order-service" />
+        <module name="common" />
+        <module name="gateway-service" />
+        <module name="notification-service" />
+        <module name="experiments" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="adaptive-message-routing" options="--enable-preview" />
+      <module name="analytics-service" options="--enable-preview" />
+      <module name="common" options="--enable-preview" />
+      <module name="experiments" options="--enable-preview" />
+      <module name="gateway-service" options="--enable-preview" />
+      <module name="notification-service" options="--enable-preview" />
+      <module name="order-service" options="--enable-preview" />
+    </option>
+  </component>
+</project>

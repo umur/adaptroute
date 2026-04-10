@@ -1,0 +1,7 @@
+{
+  "tool_name": "Read",
+  "tool_input_preview": "{\"file_path\":\"/Users/umurinan/Documents/papers/q3-Adaptive Message Routing in Spring Boot Microservices/submission-jucs/main.tex\"}",
+  "error": "File content (24310 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+  "timestamp": "2026-04-08T16:30:48.185Z",
+  "retry_count": 1
+}

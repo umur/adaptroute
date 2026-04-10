@@ -1,0 +1,13 @@
+workload,comparison,test,statistic,p_value,cliffs_delta,significant
+W1,AdaptRoute vs Kafka-Only,Mann-Whitney U,9.0,0.0,0.98,Yes
+W1,AdaptRoute vs RabbitMQ-Only,Mann-Whitney U,69.0,0.0,0.8467,Yes
+W1,AdaptRoute vs Static Split,Mann-Whitney U,74.0,0.0,0.8356,Yes
+W2,AdaptRoute vs Kafka-Only,Mann-Whitney U,813.0,0.0,-0.8067,Yes
+W2,AdaptRoute vs RabbitMQ-Only,Mann-Whitney U,785.5,1e-06,-0.7456,Yes
+W2,AdaptRoute vs Static Split,Mann-Whitney U,514.0,0.347761,-0.1422,No
+W3,AdaptRoute vs Kafka-Only,Mann-Whitney U,30.0,0.0,0.9333,Yes
+W3,AdaptRoute vs RabbitMQ-Only,Mann-Whitney U,600.0,0.027059,-0.3333,No
+W3,AdaptRoute vs Static Split,Mann-Whitney U,170.5,3.7e-05,0.6211,Yes
+W4,AdaptRoute vs Kafka-Only,Mann-Whitney U,428.0,0.750581,0.0489,No
+W4,AdaptRoute vs RabbitMQ-Only,Mann-Whitney U,805.0,0.0,-0.7889,Yes
+W4,AdaptRoute vs Static Split,Mann-Whitney U,405.0,0.510598,0.1,No

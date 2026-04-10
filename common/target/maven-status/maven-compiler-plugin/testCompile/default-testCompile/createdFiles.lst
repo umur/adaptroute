@@ -1,0 +1,8 @@
+com/research/adaptive/common/router/WeightedScoringRouterTest$RabbitMqAffinityTests.class
+com/research/adaptive/common/router/WeightedScoringRouterTest$LoadBasedRoutingTests.class
+com/research/adaptive/common/router/WeightedScoringRouterTest$SigmoidTests.class
+com/research/adaptive/common/router/WeightedScoringRouterTest.class
+com/research/adaptive/common/router/WeightedScoringRouterTest$RoutingHintTests.class
+com/research/adaptive/common/router/BrokerLoadTest.class
+com/research/adaptive/common/router/WeightedScoringRouterTest$KafkaAffinityTests.class
+com/research/adaptive/common/router/WeightedScoringRouterTest$DecisionCompletenessTests.class

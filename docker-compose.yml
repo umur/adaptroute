@@ -1,0 +1,226 @@
+version: "3.9"
+
+# =============================================================================
+# Adaptive Message Routing — Docker Compose
+#
+# Starts:
+#   - Kafka 4.0 in KRaft mode (no Zookeeper)
+#   - RabbitMQ 4.0 with management UI
+#   - gateway-service  (internal only — port conflict on host)
+#   - order-service    (internal only)
+#   - notification-service (internal only)
+#   - analytics-service   (internal only)
+#   - Prometheus           (port 9090)
+#
+# Usage:
+#   mvn clean package -DskipTests
+#   docker-compose up --build
+#
+# Experiment runner (runs after all services are healthy):
+#   docker-compose --profile experiment run --rm experiment-runner
+# =============================================================================
+
+networks:
+  adaptive-net:
+    driver: bridge
+
+volumes:
+  kafka-data:
+  rabbitmq-data:
+  prometheus-data:
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Kafka 4.0 — KRaft mode (no Zookeeper required)
+  # ---------------------------------------------------------------------------
+  kafka:
+    image: apache/kafka:4.0.0
+    container_name: kafka
+    networks: [adaptive-net]
+    ports:
+      - "19092:9092"
+      - "19094:9094"   # external listener (host access)
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,CONTROLLER://kafka:9093,EXTERNAL://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 4
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_HOURS: 1
+      KAFKA_LOG_SEGMENT_BYTES: 67108864
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list > /dev/null 2>&1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 15s
+
+  # ---------------------------------------------------------------------------
+  # RabbitMQ 4.0
+  # ---------------------------------------------------------------------------
+  rabbitmq:
+    image: rabbitmq:4.0.3-management
+    container_name: rabbitmq
+    networks: [adaptive-net]
+    ports:
+      - "15673:5672"    # AMQP (remapped: host 5672 may be in use)
+      - "25672:15672"   # Management UI  (http://localhost:25672, guest/guest)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  # ---------------------------------------------------------------------------
+  # Gateway Service — no host port binding (avoids conflict with host :8080)
+  # ---------------------------------------------------------------------------
+  gateway-service:
+    build:
+      context: .
+      dockerfile: gateway-service/Dockerfile
+    container_name: gateway-service
+    networks: [adaptive-net]
+    depends_on:
+      kafka:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASS: guest
+      SERVER_PORT: 8080
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ---------------------------------------------------------------------------
+  # Order Service
+  # ---------------------------------------------------------------------------
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    container_name: order-service
+    networks: [adaptive-net]
+    depends_on:
+      gateway-service:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      RABBITMQ_HOST: rabbitmq
+      GATEWAY_URL: http://gateway-service:8080
+      SERVER_PORT: 8081
+      ORDER_EMIT_INTERVAL_MS: 100
+      ORDER_ROUTING_HINT: ADAPTIVE
+
+  # ---------------------------------------------------------------------------
+  # Notification Service
+  # ---------------------------------------------------------------------------
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: notification-service
+    networks: [adaptive-net]
+    depends_on:
+      gateway-service:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      RABBITMQ_HOST: rabbitmq
+      GATEWAY_URL: http://gateway-service:8080
+      SERVER_PORT: 8082
+      NOTIFICATION_EMIT_INTERVAL_MS: 50
+      NOTIFICATION_ROUTING_HINT: ADAPTIVE
+
+  # ---------------------------------------------------------------------------
+  # Analytics Service
+  # ---------------------------------------------------------------------------
+  analytics-service:
+    build:
+      context: .
+      dockerfile: analytics-service/Dockerfile
+    container_name: analytics-service
+    networks: [adaptive-net]
+    depends_on:
+      gateway-service:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      RABBITMQ_HOST: rabbitmq
+      GATEWAY_URL: http://gateway-service:8080
+      SERVER_PORT: 8083
+      ANALYTICS_EMIT_INTERVAL_MS: 20
+      ANALYTICS_ROUTING_HINT: ADAPTIVE
+
+  # ---------------------------------------------------------------------------
+  # Experiment Runner (run on demand via --profile experiment)
+  # ---------------------------------------------------------------------------
+  experiment-runner:
+    build:
+      context: .
+      dockerfile: experiments/Dockerfile
+    container_name: experiment-runner
+    networks: [adaptive-net]
+    depends_on:
+      gateway-service:
+        condition: service_healthy
+    volumes:
+      - ./results:/app/results
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      RABBITMQ_HOST: rabbitmq
+      GATEWAY_URL: http://gateway-service:8080
+      RESULTS_DIR: /app/results
+      EXPERIMENT_COOLDOWN_MS: 1000
+      EXPERIMENT_REPETITIONS: 30
+    profiles:
+      - experiment
+
+  # ---------------------------------------------------------------------------
+  # Prometheus
+  # ---------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:v2.54.0
+    container_name: prometheus
+    networks: [adaptive-net]
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=7d"
+      - "--web.enable-lifecycle"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/healthy || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5

@@ -1,0 +1,58 @@
+{
+  "baseline": {
+    "label": "baseline",
+    "total": 200,
+    "success": 200,
+    "failed": 0,
+    "success_rate_pct": 100.0,
+    "tps": 466.22,
+    "avg_latency_ms": 40.3,
+    "p95_latency_ms": 82.4,
+    "broker_distribution": {
+      "RABBITMQ": 200
+    },
+    "elapsed_sec": 0.43
+  },
+  "mid_kafka_kill": {
+    "label": "mid_kafka_kill",
+    "total": 100,
+    "success": 100,
+    "failed": 0,
+    "success_rate_pct": 100.0,
+    "tps": 392.95,
+    "avg_latency_ms": 39.4,
+    "p95_latency_ms": 86.4,
+    "broker_distribution": {
+      "RABBITMQ": 100
+    },
+    "elapsed_sec": 0.25
+  },
+  "kafka_down": {
+    "label": "kafka_down",
+    "total": 200,
+    "success": 200,
+    "failed": 0,
+    "success_rate_pct": 100.0,
+    "tps": 497.28,
+    "avg_latency_ms": 38.4,
+    "p95_latency_ms": 86.1,
+    "broker_distribution": {
+      "RABBITMQ": 200
+    },
+    "elapsed_sec": 0.4
+  },
+  "recovery": {
+    "label": "recovery",
+    "total": 200,
+    "success": 200,
+    "failed": 0,
+    "success_rate_pct": 100.0,
+    "tps": 576.6,
+    "avg_latency_ms": 32.9,
+    "p95_latency_ms": 67.9,
+    "broker_distribution": {
+      "RABBITMQ": 200
+    },
+    "elapsed_sec": 0.35
+  }
+}
